@@ -21,4 +21,5 @@ public final class NativeImageProcessor {
                                               int width, int height);
 
     public static native int[] doSaturation(int[] pixels, float level, int width, int height);
+    public static native int[] doRotateHue(int[] pixels, int angle, int width, int height);
 }

@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailCallback
                 ThumbnailItem t4 = new ThumbnailItem();
                 ThumbnailItem t5 = new ThumbnailItem();
                 ThumbnailItem t6 = new ThumbnailItem();
+                ThumbnailItem t7 = new ThumbnailItem();
 
                 t1.image = thumbImage;
                 t2.image = thumbImage;
@@ -68,23 +69,27 @@ public class MainActivity extends AppCompatActivity implements ThumbnailCallback
                 t4.image = thumbImage;
                 t5.image = thumbImage;
                 t6.image = thumbImage;
+                t7.image = thumbImage;
                 ThumbnailsManager.clearThumbs();
                 ThumbnailsManager.addThumb(t1); // Original Image
 
-                t2.filter = SampleFilters.getStarLitFilter();
+                t2.filter = SampleFilters.getHueRotateSubfilter(30);
                 ThumbnailsManager.addThumb(t2);
 
-                t3.filter = SampleFilters.getBlueMessFilter();
+                t3.filter = SampleFilters.getHueRotateSubfilter(60);
                 ThumbnailsManager.addThumb(t3);
 
-                t4.filter = SampleFilters.getAweStruckVibeFilter();
+                t4.filter = SampleFilters.getHueRotateSubfilter(90);
                 ThumbnailsManager.addThumb(t4);
 
-                t5.filter = SampleFilters.getLimeStutterFilter();
+                t5.filter = SampleFilters.getHueRotateSubfilter(120);
                 ThumbnailsManager.addThumb(t5);
 
-                t6.filter = SampleFilters.getNightWhisperFilter();
+                t6.filter = SampleFilters.getHueRotateSubfilter(150);
                 ThumbnailsManager.addThumb(t6);
+
+               t7.filter =  SampleFilters.getHueRotateSubfilter(180);
+               ThumbnailsManager.addThumb(t7);
 
                 List<ThumbnailItem> thumbs = ThumbnailsManager.processThumbs(context);
 

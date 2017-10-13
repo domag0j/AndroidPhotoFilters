@@ -221,6 +221,147 @@ static void contrast(int width, int height, int *pixels, float value) {
     }
 }
 
+void rotate_hue(int *pixels, int angle, int width, int height) {
+    unsigned int r;
+    unsigned int g;
+    unsigned int b;
+
+    float temp1, temp2, temp3;
+
+    float r_percent;
+    float g_percent;
+    float b_percent;
+
+    float max_color, min_color;
+    float L, S, H;
+
+    for (int i = 0; i < width * height; i++) {
+        r = (unsigned int) (pixels[i] >> 16) & 0xFF;
+        g = (unsigned int) (pixels[i] >> 8) & 0xFF;
+        b = (unsigned int) (pixels[i]) & 0xFF;
+
+        r_percent = ((float) r) / 255;
+        g_percent = ((float) g) / 255;
+        b_percent = ((float) b) / 255;
+
+        max_color = 0;
+        if ((r_percent >= g_percent) && (r_percent >= b_percent)) {
+            max_color = r_percent;
+        }
+        if ((g_percent >= r_percent) && (g_percent >= b_percent))
+            max_color = g_percent;
+        if ((b_percent >= r_percent) && (b_percent >= g_percent))
+            max_color = b_percent;
+
+        min_color = 0;
+        if ((r_percent <= g_percent) && (r_percent <= b_percent))
+            min_color = r_percent;
+        if ((g_percent <= r_percent) && (g_percent <= b_percent))
+            min_color = g_percent;
+        if ((b_percent <= r_percent) && (b_percent <= g_percent))
+            min_color = b_percent;
+
+        L = 0;
+        S = 0;
+        H = 0;
+
+        L = (max_color + min_color) / 2;
+
+        if (max_color == min_color) {
+            S = 0;
+            H = 0;
+        }
+        else {
+            if (L < .50) {
+                S = (max_color - min_color) / (max_color + min_color);
+            }
+            else {
+                S = (max_color - min_color) / (2 - max_color - min_color);
+            }
+            if (max_color == r_percent) {
+                H = (g_percent - b_percent) / (max_color - min_color);
+            }
+            if (max_color == g_percent) {
+                H = 2 + (b_percent - r_percent) / (max_color - min_color);
+            }
+            if (max_color == b_percent) {
+                H = 4 + (r_percent - g_percent) / (max_color - min_color);
+            }
+        }
+        S = (unsigned int) (S * 100);
+        L = (unsigned int) (L * 100);
+        H = H * 60;
+        if (H < 0)
+            H += 360;
+
+
+        H += angle;
+        if (H<0){
+             H += 360;
+        } else if (H>=360){
+           H-= 360;
+        }
+
+        L = ((float) L) / 100;
+        S = ((float) S) / 100;
+        H = ((float) H) / 360;
+
+        if (S == 0) {
+            r = L * 100;
+            g = L * 100;
+            b = L * 100;
+        }
+        else {
+            temp1 = 0;
+            if (L < .50) {
+                temp1 = L * (1 + S);
+            }
+            else {
+                temp1 = L + S - (L * S);
+            }
+
+            temp2 = 2 * L - temp1;
+
+            temp3 = 0;
+            for (int i = 0; i < 3; i++) {
+                switch (i) {
+                    case 0: // red
+                    {
+                        temp3 = H + .33333f;
+                        if (temp3 > 1)
+                            temp3 -= 1;
+                        HSLtoRGB_Subfunction(r, temp1, temp2, temp3);
+                        break;
+                    }
+                    case 1: // green
+                    {
+                        temp3 = H;
+                        HSLtoRGB_Subfunction(g, temp1, temp2, temp3);
+                        break;
+                    }
+                    case 2: // blue
+                    {
+                        temp3 = H - .33333f;
+                        if (temp3 < 0)
+                            temp3 += 1;
+                        HSLtoRGB_Subfunction(b, temp1, temp2, temp3);
+                        break;
+                    }
+                    default: {
+                    }
+                }
+            }
+        }
+        r = (unsigned int) ((((float) r) / 100) * 255);
+        g = (unsigned int) ((((float) g) / 100) * 255);
+        b = (unsigned int) ((((float) b) / 100) * 255);
+
+        pixels[i] = pixels[i] & 0xFF000000 | ((int) r << 16) & 0x00FF0000 | ((int) g << 8) & 0x0000FF00 |
+                    (int) b & 0x000000FF;;
+
+    }
+}
+
 static void brightness(int width, int height, int *pixels, int value) {
 
     int red, green, blue;
@@ -367,6 +508,17 @@ Java_com_zomato_photofilters_imageprocessors_NativeImageProcessor_doContrast(JNI
                                                                              jint height) {
     jint *pixelsBuff = getPointerArray(env, pixels);
     contrast(width, height, pixelsBuff, value);
+    jintArray result = jintToJintArray(env, width * height, pixelsBuff);
+    releaseArray(env, pixels, pixelsBuff);
+    return result;
+}
+
+JNIEXPORT jintArray
+Java_com_zomato_photofilters_imageprocessors_NativeImageProcessor_doRotateHue(JNIEnv *env, jobject thiz,
+                                                                             jintArray pixels, jint angle, jint width,
+                                                                             jint height) {
+    jint *pixelsBuff = getPointerArray(env, pixels);
+    rotate_hue(pixelsBuff, angle, width, height);
     jintArray result = jintToJintArray(env, width * height, pixelsBuff);
     releaseArray(env, pixels, pixelsBuff);
     return result;
