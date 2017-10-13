@@ -396,6 +396,62 @@ static void brightness(int width, int height, int *pixels, int value) {
 }
 
 
+static void sephia(int width, int height, int *pixels, float level) {
+
+    int red, green, blue;
+    if (level < 0.0f){
+        level = 0.0f;
+    }
+    if (level > 1.0f){
+        level = 1.0f;
+    }
+    float cr_r = ( 1 - level + level * .393f);
+    float cr_g = level * .769f;
+    float cr_b = level * .189f;
+
+    float cg_r = level * .349f;
+    float cg_g = ( 1 - level + level * .686f);
+    float cg_b = level * .168f;
+
+    float cb_r = level * .272f;
+    float cb_g = level * .534f;
+    float cb_b = ( 1 - level + level * .131f);
+
+
+
+    for (int i = 0; i < width * height; i++) {
+        red = (pixels[i] >> 16) & 0xFF;
+        green = (pixels[i] >> 8) & 0xFF;
+        blue = (pixels[i]) & 0xFF;
+
+        float out_red = red * cr_r + green * cr_g + blue * cr_b;
+        float out_green = red * cg_r + green * cg_g + blue * cg_b;
+        float out_blue = red * cb_r + green * cb_g + blue * cb_b;
+
+        red = (int)(out_red+.5f);
+        green = (int)(out_green+.5f);
+        blue = (int)(out_blue+.5f);
+
+        //red += value;
+        //green += value;
+        //blue += value;
+
+        // validation check
+        if (red > 255)
+            red = 255;
+
+        if (green > 255)
+            green = 255;
+
+        if (blue > 255)
+            blue = 255;
+
+
+        pixels[i] = pixels[i] & 0xFF000000 | (red << 16) & 0x00FF0000 | (green << 8) & 0x0000FF00 | blue & 0x000000FF;
+    }
+}
+
+
 static void applyChannelCurves(int width, int height, int *pixels, int *r, int *g, int *b) {
     int red;
     int green;
@@ -440,6 +496,9 @@ static void applyRGBCurve(int width, int height, int *pixels, int *rgb) {
     }
 
 }
+
+
+
 
 static inline jint *getPointerArray(JNIEnv *env, jintArray buff) {
     jint *ptrBuff = NULL;
@@ -517,12 +576,41 @@ JNIEXPORT jintArray
 Java_com_zomato_photofilters_imageprocessors_NativeImageProcessor_doRotateHue(JNIEnv *env, jobject thiz,
                                                                              jintArray pixels, jint angle, jint width,
                                                                              jint height) {
+    /*
     jint *pixelsBuff = getPointerArray(env, pixels);
     rotate_hue(pixelsBuff, angle, width, height);
     jintArray result = jintToJintArray(env, width * height, pixelsBuff);
     releaseArray(env, pixels, pixelsBuff);
-    return result;
+     return result;
+     */
+    jint *pixelsBuff = env->GetIntArrayElements(pixels, NULL);
+    rotate_hue(pixelsBuff, angle, width, height);
+    env->ReleaseIntArrayElements(pixels, pixelsBuff, 0);
+
+    return pixels;
+
 }
+
+
+JNIEXPORT jintArray
+Java_com_zomato_photofilters_imageprocessors_NativeImageProcessor_doSephia(JNIEnv *env, jobject thiz,
+                                                                              jintArray pixels, jfloat level, jint width,
+                                                                              jint height) {
+    /*
+    jint *pixelsBuff = getPointerArray(env, pixels);
+    rotate_hue(pixelsBuff, angle, width, height);
+    jintArray result = jintToJintArray(env, width * height, pixelsBuff);
+    releaseArray(env, pixels, pixelsBuff);
+     return result;
+     */
+    jint *pixelsBuff = env->GetIntArrayElements(pixels, NULL);
+    sephia(width, height, pixelsBuff, level);
+    env->ReleaseIntArrayElements(pixels, pixelsBuff, 0);
+
+    return pixels;
+
+}
+
 
 JNIEXPORT jintArray
 Java_com_zomato_photofilters_imageprocessors_NativeImageProcessor_doColorOverlay(JNIEnv *env, jobject thiz,

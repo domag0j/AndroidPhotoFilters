@@ -94,4 +94,14 @@ public final class ImageProcessor {
         return inputImage;
     }
 
+    public static Bitmap doSephia(Bitmap inputImage, float level) {
+        int width = inputImage.getWidth();
+        int height = inputImage.getHeight();
+        int[] pixels = new int[width * height];
+
+        inputImage.getPixels(pixels, 0, width, 0, 0, width, height);
+        NativeImageProcessor.doSephia(pixels, level, width, height);
+        inputImage.setPixels(pixels, 0, width, 0, 0, width, height);
+        return inputImage;
+    }
 }

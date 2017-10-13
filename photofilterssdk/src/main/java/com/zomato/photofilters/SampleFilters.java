@@ -5,6 +5,7 @@ import com.zomato.photofilters.imageprocessors.Filter;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.HueRotationSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.SephiaSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ToneCurveSubFilter;
 
 /**
@@ -144,6 +145,12 @@ public final class SampleFilters {
 
         Filter filter = new Filter();
         filter.addSubFilter(new HueRotationSubFilter(angle));
+        return filter;
+    }
+
+    public static Filter getSephia(float level) {
+        Filter filter = new Filter();
+        filter.addSubFilter(new SephiaSubFilter(level));
         return filter;
     }
 }

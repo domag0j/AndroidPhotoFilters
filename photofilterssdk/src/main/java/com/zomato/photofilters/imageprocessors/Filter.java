@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ColorOverlaySubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.SephiaSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.ToneCurveSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.VignetteSubfilter;
 
@@ -36,7 +37,7 @@ public class Filter {
      * @see ContrastSubFilter
      * @see ToneCurveSubFilter
      * @see VignetteSubfilter
-     * @see com.zomato.photofilters.imageprocessors.subfilters.SaturationSubfilter
+     * @see SephiaSubFilter
      */
     public void addSubFilter(SubFilter subFilter) {
         subFilters.add(subFilter);
