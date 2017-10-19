@@ -24,4 +24,5 @@ public final class NativeImageProcessor {
     public static native int[] doRotateHue(int[] pixels, int angle, int width, int height);
 
     public static native int[] doSephia(int[] pixels, float level, int width, int height);
+    public static native int[] blendSoftLight(int[] pixels_base,int[] pixels_top, int width, int height);
 }

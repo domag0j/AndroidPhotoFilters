@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.zomato.photofilters.SampleFilters;
-import com.zomato.photofilters.imageprocessors.Filter;
+import com.zomato.photofilters.imageprocessors.ImageProcessor;
 
 import java.util.List;
 
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailCallback
 //               ThumbnailsManager.addThumb(t7);
 
 
-                t2.filter = SampleFilters.getSephia(0.0f);
+                t2.testSoftLight = true;
                 ThumbnailsManager.addThumb(t2);
 
                 t3.filter = SampleFilters.getSephia(0.2f);
@@ -121,7 +122,19 @@ public class MainActivity extends AppCompatActivity implements ThumbnailCallback
     }
 
     @Override
-    public void onThumbnailClick(Filter filter) {
-        placeHolderImageView.setImageBitmap(filter.processFilter(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(this.getApplicationContext().getResources(), R.drawable.photo), 640, 640, false)));
+    public void onThumbnailClick(ThumbnailItem thumbnailItem) {
+        if (thumbnailItem.testSoftLight) {
+            Bitmap blend_mask = Bitmap.createBitmap((int) 640, (int) 640, Bitmap.Config.ARGB_8888);
+            blend_mask.eraseColor(Color.argb(255, 255, 200, 255));
+            Bitmap base = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(this.getApplicationContext().getResources(), R.drawable.photo), 640, 640, false);
+            try {
+                ImageProcessor.blend(base, blend_mask, ImageProcessor.BLEND_MODE_SOFT_LIGHT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            placeHolderImageView.setImageBitmap(base);
+        }else {
+            placeHolderImageView.setImageBitmap(thumbnailItem.filter.processFilter(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(this.getApplicationContext().getResources(), R.drawable.photo), 640, 640, false)));
+        }
     }
 }

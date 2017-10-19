@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
  * @author Varun on 29/06/15.
  */
 public final class ImageProcessor {
+    public final static int BLEND_MODE_SOFT_LIGHT = 1;
+
     private ImageProcessor() {
     }
 
@@ -104,4 +106,22 @@ public final class ImageProcessor {
         inputImage.setPixels(pixels, 0, width, 0, 0, width, height);
         return inputImage;
     }
+
+    public static void blend(Bitmap base, Bitmap top, int blend_mode) throws Exception {
+        int width = base.getWidth();
+        int height = base.getHeight();
+        if (top.getWidth()!=width || top.getHeight()!=height){
+            throw new Exception("bitmaps do not match");
+        }
+        int[] pixels_base = new int[width * height];
+        int[] pixels_top = new int[width * height];
+        base.getPixels(pixels_base, 0, width, 0, 0, width, height);
+        top.getPixels(pixels_top, 0, width, 0, 0, width, height);
+        //for now only soft light
+
+        NativeImageProcessor.blendSoftLight(pixels_base, pixels_top, width, height);
+        base.setPixels(pixels_base, 0, width, 0, 0, width, height);
+
+    }
+
 }

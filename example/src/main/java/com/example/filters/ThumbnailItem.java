@@ -10,9 +10,11 @@ import com.zomato.photofilters.imageprocessors.Filter;
 public class ThumbnailItem {
     public Bitmap image;
     public Filter filter;
+    public boolean testSoftLight;
 
     public ThumbnailItem() {
         image = null;
+        testSoftLight = false;
         filter = new Filter();
     }
 }

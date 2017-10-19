@@ -2,6 +2,9 @@ package com.example.filters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+
+import com.zomato.photofilters.imageprocessors.ImageProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +30,17 @@ public final class ThumbnailsManager {
             // scaling down the image
             float size = context.getResources().getDimension(R.dimen.thumbnail_size);
             thumb.image = Bitmap.createScaledBitmap(thumb.image, (int) size, (int) size, false);
-            thumb.image = thumb.filter.processFilter(thumb.image);
+            if (thumb.testSoftLight){
+                Bitmap blend_mask = Bitmap.createBitmap((int) size, (int) size, Bitmap.Config.ARGB_8888);
+                blend_mask.eraseColor(Color.argb(127, 125, 105, 124));
+                try {
+                    ImageProcessor.blend(thumb.image, blend_mask, ImageProcessor.BLEND_MODE_SOFT_LIGHT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                thumb.image = thumb.filter.processFilter(thumb.image);
+            }
             //cropping circle
             thumb.image = GeneralUtils.generateCircularBitmap(thumb.image);
             processedThumbs.add(thumb);

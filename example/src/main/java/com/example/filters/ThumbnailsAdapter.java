@@ -47,7 +47,7 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             @Override
             public void onClick(View v) {
                 if (lastPosition != i) {
-                    thumbnailCallback.onThumbnailClick(thumbnailItem.filter);
+                    thumbnailCallback.onThumbnailClick(thumbnailItem);
                     lastPosition = i;
                 }
             }
