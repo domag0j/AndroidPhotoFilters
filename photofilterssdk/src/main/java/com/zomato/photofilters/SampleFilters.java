@@ -32,6 +32,7 @@ public final class SampleFilters {
         return filter;
     }
 
+
     public static Filter getBlueMessFilter() {
         Point[] redKnots;
         redKnots = new Point[8];
@@ -147,6 +148,24 @@ public final class SampleFilters {
         filter.addSubFilter(new HueRotationSubFilter(angle));
         return filter;
     }
+
+
+    public static Filter getContrastSubfilter(float amount) {
+
+
+        Filter filter = new Filter();
+        filter.addSubFilter(new ContrastSubFilter(amount));
+        return filter;
+    }
+
+    public static Filter getBrightnessSubfilter(int percent) {
+
+
+        Filter filter = new Filter();
+        filter.addSubFilter(new BrightnessSubFilter(percent));
+        return filter;
+    }
+
 
     public static Filter getSephia(float level) {
         Filter filter = new Filter();

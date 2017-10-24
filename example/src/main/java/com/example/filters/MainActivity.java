@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.zomato.photofilters.SampleFilters;
 import com.zomato.photofilters.imageprocessors.ImageProcessor;
+import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 
 import java.util.List;
 
@@ -93,23 +94,45 @@ public class MainActivity extends AppCompatActivity implements ThumbnailCallback
 //               ThumbnailsManager.addThumb(t7);
 
 
-                t2.testSoftLight = true;
+
+
+
+//                t2.testSoftLight = true;
+//                ThumbnailsManager.addThumb(t2);
+//
+//                t3.filter = SampleFilters.getSephia(0.2f);
+//                ThumbnailsManager.addThumb(t3);
+//
+//                t4.filter = SampleFilters.getSephia(0.5f);
+//                ThumbnailsManager.addThumb(t4);
+//
+//                t5.filter = SampleFilters.getSephia(0.7f);
+//                ThumbnailsManager.addThumb(t5);
+//
+//                t6.filter = SampleFilters.getSephia(1.0f);
+//                ThumbnailsManager.addThumb(t6);
+//
+//                t7.filter =  SampleFilters.getHueRotateSubfilter(180);
+//                ThumbnailsManager.addThumb(t7);
+
+                t2.filter = SampleFilters.getBrightnessSubfilter(100);
                 ThumbnailsManager.addThumb(t2);
 
-                t3.filter = SampleFilters.getSephia(0.2f);
+                t3.filter = SampleFilters.getBrightnessSubfilter(30);
                 ThumbnailsManager.addThumb(t3);
 
-                t4.filter = SampleFilters.getSephia(0.5f);
+                t4.filter = SampleFilters.getBrightnessSubfilter(140);
                 ThumbnailsManager.addThumb(t4);
 
-                t5.filter = SampleFilters.getSephia(0.7f);
+                t5.filter = SampleFilters.getContrastSubfilter(1.0f);
                 ThumbnailsManager.addThumb(t5);
 
-                t6.filter = SampleFilters.getSephia(1.0f);
+                t6.filter = SampleFilters.getContrastSubfilter(0.1f);
                 ThumbnailsManager.addThumb(t6);
 
-                t7.filter =  SampleFilters.getHueRotateSubfilter(180);
+                t7.filter =  SampleFilters.getContrastSubfilter(1.3f);
                 ThumbnailsManager.addThumb(t7);
+
 
                 List<ThumbnailItem> thumbs = ThumbnailsManager.processThumbs(context);
 

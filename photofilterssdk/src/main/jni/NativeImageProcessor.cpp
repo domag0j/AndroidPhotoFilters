@@ -189,35 +189,38 @@ static void contrast(int width, int height, int *pixels, float value) {
 
     float red, green, blue;
     int R, G, B;
+    float gray = 127.5f;
+    float intercept = gray - value*gray;
 
     for (int i = 0; i < width * height; i++) {
         red = (pixels[i] >> 16) & 0xFF;
         green = (pixels[i] >> 8) & 0xFF;
         blue = (pixels[i]) & 0xFF;
 
-        red = (((((red / 255.0) - 0.5) * value) + 0.5) * 255.0);
-        green = (((((green / 255.0) - 0.5) * value) + 0.5) * 255.0);
-        blue = (((((blue / 255.0) - 0.5) * value) + 0.5) * 255.0);
+        int red_out = (int)(red * value + intercept + .5f);
+        int green_out = (int)(green * value + intercept + .5f);
+        int blue_out = (int)(blue * value + intercept + .5f);
+
 
         // validation check
-        if (red > 255)
-            red = 255;
-        else if (red < 0)
-            red = 0;
+        if (red_out > 255)
+            red_out = 255;
+        else if (red_out < 0)
+            red_out = 0;
 
-        if (green > 255)
-            green = 255;
-        else if (green < 0)
-            green = 0;
+        if (green_out > 255)
+            green_out = 255;
+        else if (green_out < 0)
+            green_out = 0;
 
-        if (blue > 255)
-            blue = 255;
-        else if (blue < 0)
-            blue = 0;
+        if (blue_out > 255)
+            blue_out = 255;
+        else if (blue_out < 0)
+            blue_out = 0;
 
-        R = (int) red;
-        G = (int) green;
-        B = (int) blue;
+        R = red_out;
+        G = green_out;
+        B = blue_out;
         pixels[i] = pixels[i] & 0xFF000000 | (R << 16) & 0x00FF0000 | (G << 8) & 0x0000FF00 | B & 0x000000FF;
     }
 }
@@ -366,15 +369,15 @@ void rotate_hue(int *pixels, int angle, int width, int height) {
 static void brightness(int width, int height, int *pixels, int value) {
 
     int red, green, blue;
-
+    float mvalue = value / 100.0f;
     for (int i = 0; i < width * height; i++) {
         red = (pixels[i] >> 16) & 0xFF;
         green = (pixels[i] >> 8) & 0xFF;
         blue = (pixels[i]) & 0xFF;
 
-        red += value;
-        green += value;
-        blue += value;
+        red = (int)(red * mvalue + .5f);
+        green = (int)(green * mvalue + .5f);
+        blue = (int)(blue * mvalue + .5f);
 
         // validation check
         if (red > 255)
