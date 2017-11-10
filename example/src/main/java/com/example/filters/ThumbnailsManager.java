@@ -34,7 +34,7 @@ public final class ThumbnailsManager {
                 Bitmap blend_mask = Bitmap.createBitmap((int) size, (int) size, Bitmap.Config.ARGB_8888);
                 blend_mask.eraseColor(Color.argb(127, 125, 105, 124));
                 try {
-                    ImageProcessor.blend(thumb.image, blend_mask, ImageProcessor.BLEND_MODE_SOFT_LIGHT);
+                    ImageProcessor.blend(thumb.image, blend_mask, ImageProcessor.BLEND_MODE_EXCLUSION);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

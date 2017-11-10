@@ -14,7 +14,6 @@ import android.widget.ImageView;
 
 import com.zomato.photofilters.SampleFilters;
 import com.zomato.photofilters.imageprocessors.ImageProcessor;
-import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 
 import java.util.List;
 
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements ThumbnailCallback
 //                t7.filter =  SampleFilters.getHueRotateSubfilter(180);
 //                ThumbnailsManager.addThumb(t7);
 
-                t2.filter = SampleFilters.getBrightnessSubfilter(100);
+                t2.testSoftLight = true;
                 ThumbnailsManager.addThumb(t2);
 
                 t3.filter = SampleFilters.getBrightnessSubfilter(30);
@@ -148,10 +147,10 @@ public class MainActivity extends AppCompatActivity implements ThumbnailCallback
     public void onThumbnailClick(ThumbnailItem thumbnailItem) {
         if (thumbnailItem.testSoftLight) {
             Bitmap blend_mask = Bitmap.createBitmap((int) 640, (int) 640, Bitmap.Config.ARGB_8888);
-            blend_mask.eraseColor(Color.argb(255, 255, 200, 255));
+            blend_mask.eraseColor(Color.argb(127, 72, 03, 57));
             Bitmap base = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(this.getApplicationContext().getResources(), R.drawable.photo), 640, 640, false);
             try {
-                ImageProcessor.blend(base, blend_mask, ImageProcessor.BLEND_MODE_SOFT_LIGHT);
+                ImageProcessor.blend(base, blend_mask, ImageProcessor.BLEND_MODE_EXCLUSION);
             } catch (Exception e) {
                 e.printStackTrace();
             }

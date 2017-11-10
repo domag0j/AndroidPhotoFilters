@@ -167,6 +167,7 @@ public final class SampleFilters {
     }
 
 
+
     public static Filter getSephia(float level) {
         Filter filter = new Filter();
         filter.addSubFilter(new SephiaSubFilter(level));

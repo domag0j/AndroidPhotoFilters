@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
  */
 public final class ImageProcessor {
     public final static int BLEND_MODE_SOFT_LIGHT = 1;
+    public final static int BLEND_MODE_EXCLUSION = 2;
+
 
     private ImageProcessor() {
     }
@@ -118,8 +120,11 @@ public final class ImageProcessor {
         base.getPixels(pixels_base, 0, width, 0, 0, width, height);
         top.getPixels(pixels_top, 0, width, 0, 0, width, height);
         //for now only soft light
-
-        NativeImageProcessor.blendSoftLight(pixels_base, pixels_top, width, height);
+        if (blend_mode==BLEND_MODE_EXCLUSION){
+            NativeImageProcessor.blendExclusion(pixels_base, pixels_top, width, height);
+        }else {
+            NativeImageProcessor.blendSoftLight(pixels_base, pixels_top, width, height);
+        }
         base.setPixels(pixels_base, 0, width, 0, 0, width, height);
 
     }

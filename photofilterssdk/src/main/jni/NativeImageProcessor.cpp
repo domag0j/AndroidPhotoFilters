@@ -437,6 +437,41 @@ static void blendSoftLight(int *pixels_base, int *pixels_top, int width, int hei
     }
 }
 
+
+
+
+static int blendExclusionPixel(float base, float blend, float alpha){
+    float blended = base + blend - 2 * base * blend;
+
+    float rval = base * (1.0f-alpha) + blended * alpha;
+    int r = (int)(rval * 255.0f+.5f);
+    if (r>255) return 255;
+    if (r<0) return 0;
+    return r;
+}
+
+static void blendExclusion(int *pixels_base, int *pixels_top, int width, int height) {
+    for (int i = 0; i < width * height; i++) {
+        int pbase = pixels_base[i];
+        int alpha_base = ( pbase>> 24) & 0xFF;
+        float red_base = ((pbase >> 16) & 0xFF)/255.f;
+        float green_base = ((pbase >> 8) & 0xFF)/255.f;
+        float blue_base = (pbase & 0xFF)/255.f;
+        int ptop = pixels_top[i];
+        float alpha_top = ((ptop >> 24) & 0xFF)/255.f;
+        float red_top = ((ptop >> 16) & 0xFF)/255.f;
+        float green_top = ((ptop >> 8) & 0xFF)/255.f;
+        float blue_top = (ptop & 0xFF)/255.f;
+        int red = blendExclusionPixel(red_base, red_top, alpha_top);
+        int green = blendExclusionPixel(green_base, green_top, alpha_top);
+        int blue = blendExclusionPixel(blue_base, blue_top, alpha_top);
+
+        pixels_base[i] = (pbase & 0xFF000000) | ((red << 16) & 0x00FF0000) |
+                         ((green << 8) & 0x0000FF00) | (blue & 0x000000FF);
+
+    }
+}
+
 static void sephia(int width, int height, int *pixels, float level) {
 
     int red, green, blue;
@@ -666,6 +701,28 @@ Java_com_zomato_photofilters_imageprocessors_NativeImageProcessor_blendSoftLight
     jint *pixelsBuff = env->GetIntArrayElements(pixels_base, NULL);
     jint *pixelsBuff2 = env->GetIntArrayElements(pixels_top, NULL);
     blendSoftLight(pixelsBuff, pixelsBuff2, width, height);
+
+    env->ReleaseIntArrayElements(pixels_base, pixelsBuff, 0);
+    env->ReleaseIntArrayElements(pixels_top, pixelsBuff2, 0);
+
+    return pixels_base;
+
+}
+
+JNIEXPORT jintArray
+Java_com_zomato_photofilters_imageprocessors_NativeImageProcessor_blendExclusion(JNIEnv *env, jobject thiz,
+                                                                                 jintArray pixels_base, jintArray pixels_top, jint width,
+                                                                                 jint height) {
+    /*
+    jint *pixelsBuff = getPointerArray(env, pixels);
+    rotate_hue(pixelsBuff, angle, width, height);
+    jintArray result = jintToJintArray(env, width * height, pixelsBuff);
+    releaseArray(env, pixels, pixelsBuff);
+     return result;
+     */
+    jint *pixelsBuff = env->GetIntArrayElements(pixels_base, NULL);
+    jint *pixelsBuff2 = env->GetIntArrayElements(pixels_top, NULL);
+    blendExclusion(pixelsBuff, pixelsBuff2, width, height);
 
     env->ReleaseIntArrayElements(pixels_base, pixelsBuff, 0);
     env->ReleaseIntArrayElements(pixels_top, pixelsBuff2, 0);
